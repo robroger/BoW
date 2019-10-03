@@ -19,19 +19,20 @@ def main():
             json_data = json.load(data_file)
             output_file = './output/' + file.name  # caminho da pasta para os arquivos de saida
             data = str(datetime.date(int(file.name[:4]), int(file.name[4:6]), int(file.name[6:8])))  # ano, mês, dia
-
+            i = 0
         for publicacao in json_data:
+            i = i+1
+            print(i)
             title_string = publicacao['title']
             body_string = publicacao['body']
             publicacao_text = ' '.join([title_string, body_string])
 
             # Normalização do texto de uma publicação
-            tokens = Text_normalization.text_tokenize(publicacao_text)
+            tokens = Text_normalization.text_tokenize(publicacao_text.lower())
             filtered_tokens = Text_normalization.remove_specialchar(tokens)
-            filtered_text = Text_normalization.remove_stopwords(filtered_tokens)
-            # fazer o stemming só do plural regex
-            stemmed_tokens = Text_normalization.stemming(
-                filtered_text)  # stemmed_tokens = Texto final tratado em tokens
+            corrected_tokens = Text_normalization.spell_check(filtered_tokens)
+            filtered_text = Text_normalization.remove_stopwords(corrected_tokens)
+            stemmed_tokens = Text_normalization.stemming(filtered_text)
             word_counts = Text_normalization.count_word(stemmed_tokens)
             publicacao_dict['data'] = data
             publicacao_dict['bow'] = word_counts
@@ -44,7 +45,7 @@ def main():
             output_list.clear()
             print(datetime.datetime.now().time())
 
-        database.post_publicacoes(output_file)
+        # database.post_publicacoes(output_file)
 
         # como pesquisar as publicacoes com risco no mongodb
 

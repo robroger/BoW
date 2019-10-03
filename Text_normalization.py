@@ -2,6 +2,7 @@ import nltk
 import re  # regular expression
 import collections
 import string
+from spellchecker import SpellChecker
 
 
 # Separa todas os elementos do texto
@@ -38,3 +39,20 @@ def stemming(filtered_text):
 def count_word(tokens):
     word_counts = collections.Counter(tokens)
     return word_counts
+
+
+def spell_check(tokens):
+    corrected_tokens = list(tokens)
+    spell = SpellChecker(distance=2, language='pt')  # recomendada para palavras grandes
+    misspelled = spell.unknown(corrected_tokens)
+    for word in misspelled:
+        if word != spell.correction(word):
+            corrected_tokens.append(spell.correction(word))
+        else:
+            misspelled = [token for token in misspelled if token != word]
+    corrected_tokens = [token for token in corrected_tokens if token not in misspelled]
+    return corrected_tokens
+
+
+cor = remove_stopwords(spell_check(remove_specialchar(text_tokenize('agricuura'))))
+print(cor)
