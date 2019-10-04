@@ -5,7 +5,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Bow_dou.py" beforeDir="false" afterPath="$PROJECT_DIR$/Bow_dou.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Text_normalization.py" beforeDir="false" afterPath="$PROJECT_DIR$/Text_normalization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/20171023.json" beforeDir="false" afterPath="$PROJECT_DIR$/output/20171023.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/20171023.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/20171023.json" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,7 +46,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Text_normalization">
+  <component name="RunManager" selected="Python.Bow_dou">
     <configuration name="Bow_dou" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="BagOfWords" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -132,8 +133,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Text_normalization" />
         <item itemvalue="Python.Bow_dou" />
+        <item itemvalue="Python.Text_normalization" />
         <item itemvalue="Python.database" />
         <item itemvalue="Python.Testing" />
       </list>
