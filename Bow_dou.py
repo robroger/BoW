@@ -1,59 +1,38 @@
 import json
-import Text_normalization
 from pathlib import *
-import datetime
+import Dou_dict_bow
 import database
 
 
 def main():
-    path_data = Path('./data')  # se não for colocar os arquivos de leitura nessa pasta, trocar para o caminho absoluto
+    path_data = Path('./data')  # caminho da pasta dos arquivos de entrada
     filelist = []  # lista de arquivos .json da pasta no caminho acima
-    output_list = []
-    publicacao_dict = {}
-    output_dict = {}
+    output_list = []  # lista a ser escrita no arquivo json [{date: '', bow: '', text: ''}]
+    publicacao_dict = {}  # dict que compõe a lista -output_list- {date: '', bow: '', text: ''}
+
+    # Dou_dict_bow.create_dict_dou(path_data)
+
     for f in path_data.iterdir():
         filelist.append(f)
 
     for file in filelist:
-        print(datetime.datetime.now().time())
         with file.open() as data_file:
             json_data = json.load(data_file)
             output_file = './output/' + file.name  # caminho da pasta para os arquivos de saida
-            data = str(datetime.date(int(file.name[:4]), int(file.name[4:6]), int(file.name[6:8])))  # ano, mês, dia
-            i = 0
+            date = Dou_dict_bow.date_from_string(file.name)
         for publicacao in json_data:
-            i += 1
-            print(i)
-            title_string = publicacao['title']
-            body_string = publicacao['body']
-            publicacao_text = ' '.join([title_string, body_string])
+            publicacao_dict['date'] = date
+            publicacao_dict['bow'] = Dou_dict_bow.create_bow(publicacao, './dicts_dou/dict_dou')
+            publicacao_dict['text'] = Dou_dict_bow.publicacao_text_join(publicacao)
+            output_list.append(publicacao_dict.copy())
 
-            # Normalização do texto de uma publicação
-            tokens = Text_normalization.text_tokenize(publicacao_text.lower())
-            filtered_tokens = Text_normalization.remove_specialchar(tokens)
-            corrected_tokens, corrected_words = Text_normalization.spell_check(filtered_tokens)
-            filtered_text = Text_normalization.remove_stopwords(corrected_tokens)
-            stemmed_tokens = Text_normalization.stemming(filtered_text)
-            word_counts = Text_normalization.count_word(stemmed_tokens)
-            publicacao_dict['date'] = data
-            publicacao_dict['bow'] = word_counts
-            publicacao_dict['text'] = publicacao_text
-            # publicacao_dict['risco'] =
-            output_list.append(publicacao_dict.copy())  # sem o copy a última publicação sobrescreve todas as anteriores
-            output_dict.update(corrected_words)
-
-        with open(output_file, 'w') as outfile:
-            json.dump(output_list, outfile)
-            output_list.clear()
-            print(datetime.datetime.now().time())
+        Dou_dict_bow.dump_jsonfile(output_file, output_list)
+        output_list.clear()
 
     # database.post_publicacoes(output_file)
+    # dump_jsonfile('output_dict', output_dict)
 
-    with open('output_dict', 'w') as outfile:
-        json.dump(output_dict, outfile)
-
-
-        # como pesquisar as publicacoes com risco no mongodb
+    # como pesquisar as publicacoes com risco no mongodb
 
 
 if __name__ == '__main__':
