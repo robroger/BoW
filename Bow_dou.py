@@ -32,8 +32,6 @@ def main():
     # database.post_publicacoes(output_file)
     # dump_jsonfile('output_dict', output_dict)
 
-    # como pesquisar as publicacoes com risco no mongodb
-
 
 if __name__ == '__main__':
     main()

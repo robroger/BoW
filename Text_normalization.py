@@ -1,18 +1,30 @@
 import nltk
+from nltk.tokenize import RegexpTokenizer
 import re
+# from unidecode import unidecode
 import collections
 import string
 from spellchecker import SpellChecker
+
+
+# TODO: biblioteca UNIDECODE
+# TODO: arrumar os retornos
 
 
 def text_tokenize(text):
     """
     Separa as palavras de um texto.
     :param text: 'Isso é um texto!'
-    :return: tokens: ['Isso', 'é', 'um', 'texto','!']
+     :return: tokens: ['Isso', 'é', 'um', 'texto','!']
     """
-    tokens = nltk.word_tokenize(text)
-    tokens = [token.strip() for token in tokens]
+    # text = unidecode(text)
+    text = re.sub(r'-(?:me|te|se|nos|vos|o|os|a|as|lo|los|la|las|lhe|lhes|lha|lhas|lho|lhos|no|na|nas|mo|ma|mos'
+                  r'|mas|to|ta|tos|tas)\b', '', text)
+    tokenizer = RegexpTokenizer(
+        r'(R\$\s?(?:\d{1,3}.?)+,\d{2})|'
+        r'(\d+/\d+)|'
+        r'(\w+)', gaps=True)
+    tokens = tokenizer.tokenize(text)
     return tokens
 
 
@@ -23,12 +35,16 @@ def remove_specialchar(tokens):
     :param tokens: ['Isso', 'é', 'um', 'texto','!']
     :return filtered_tokens: ['Isso', 'é', 'um', 'texto']
     """
-    pattern_decimal = re.compile('^[0-9]+[.,][0-9]+[.,]?[0-9]+[.,]?[0-9]+[.,]?[0-9]+$')
+    pattern_decimal = re.compile(r"(R\$\s)?(\d{1,3}\.?)+(,\d{2})")
+    # pattern_enclise = re.compile(r"\b(\w+)-(me|te|se|nos|vos|o|os|a|as|lo|los|la|las|lhe|lhes|lha|lhas|lho|lhos|no|na"
+    #                              r"|nas|mo|ma|mos|mas|to|ta|tos|tas)\b")
     decimals = [token for token in tokens if pattern_decimal.match(token)]
+    # enclises = [token for token in tokens if pattern_enclise.match(token)]
+    # tokens = [token for token in tokens if token not in (decimals + enclises)]
     tokens = [token for token in tokens if token not in decimals]
     pattern = re.compile('[{}]'.format(re.escape(string.punctuation)))
-    # TODO: eu deveria deixar o $ para 'R$'?
     tokens = [pattern.sub('', token) for token in tokens]
+    # tokens.extend(decimals + enclises)
     tokens.extend(decimals)
     filtered_tokens = filter(None, tokens)
     return filtered_tokens
@@ -81,7 +97,7 @@ def spell_check_define_dict(spellcheck_dict, lang='pt'):
     """
     spell = SpellChecker(distance=1, language=lang)
     spell.word_frequency.load_text_file('./romans_up_to_3999.txt')  # adiciona dicionário de números romanos
-    ## TODO: adicionar dicionário com siglas de órgãos públicos
+    # TODO: adicionar dicionário com siglas de órgãos públicos
     spell.word_frequency.load_text_file(spellcheck_dict)
     return spell
 
@@ -109,12 +125,10 @@ def spell_check(tokens, spell):
         corrected_dict[word] = spell.correction(word)
         output_corrected_list.update(corrected_dict)
     spellcheck_tokens = [token for token in spellcheck_tokens if token not in misspelled]
-    # TODO: Eu deveria fazer um interator ao invés de uma lista?
-    # output_corrected_iter = iter(output_corrected_list)
     return spellcheck_tokens, output_corrected_list
 
 
-# sp = '1.200, Roberta !'
-# print(text_tokenize(sp))
-# print(list(remove_specialchar(text_tokenize(sp))))
-
+sp = 'EXTRATO DE TERMO ADITIVO Nº 4/2017 - UASG 133003'
+tp = 'teste testa-la testa-lo R$ 5.000,00'
+print(text_tokenize(sp))
+print(list(remove_specialchar(text_tokenize(sp))))

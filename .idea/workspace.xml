@@ -2,11 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d6583dbc-0734-4e81-88e8-b818862309e7" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/regex_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Bow_dou.py" beforeDir="false" afterPath="$PROJECT_DIR$/Bow_dou.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dou_dict_bow.py" beforeDir="false" afterPath="$PROJECT_DIR$/Dou_dict_bow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Text_normalization.py" beforeDir="false" afterPath="$PROJECT_DIR$/Text_normalization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/20171024.json" beforeDir="false" afterPath="$PROJECT_DIR$/output/20171024.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output_dict" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/20171024.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/20171024.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicts_dou/dict_dou" beforeDir="false" afterPath="$PROJECT_DIR$/dicts_dou/dict_dou" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/20171024.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spellcheck/spellcheck_dou" beforeDir="false" afterPath="$PROJECT_DIR$/spellcheck/spellcheck_dou" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,6 +31,7 @@
   <component name="ProjectId" id="1QZVSVjG8UQHYzYFsISDjGAgg2t" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -46,70 +51,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Dou_dict_bow">
-    <configuration name="Bow_dou" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="BagOfWords" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Bow_dou.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Dou_dict_bow" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="BagOfWords" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Dou_dict_bow.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Testing" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="BagOfWords" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="C:\Users\rober\PycharmProjects\BagOfWords\Bow_dou.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.regex_test">
     <configuration name="Text_normalization" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="BagOfWords" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -131,7 +73,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="database" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="link_pub" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="BagOfWords" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -143,7 +85,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/database.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/link_pub.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -152,13 +94,83 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="regex_bib" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="BagOfWords" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/regex_bib.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="regex_bib_marcos" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="BagOfWords" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/regex_bib_marcos.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="regex_test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="BagOfWords" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/regex_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.regex_bib" />
+      <item itemvalue="Python.regex_test" />
+      <item itemvalue="Python.Text_normalization" />
+      <item itemvalue="Python.link_pub" />
+      <item itemvalue="Python.regex_bib_marcos" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Dou_dict_bow" />
-        <item itemvalue="Python.Bow_dou" />
+        <item itemvalue="Python.regex_test" />
+        <item itemvalue="Python.regex_bib" />
+        <item itemvalue="Python.regex_bib_marcos" />
+        <item itemvalue="Python.link_pub" />
         <item itemvalue="Python.Text_normalization" />
-        <item itemvalue="Python.database" />
-        <item itemvalue="Python.Testing" />
       </list>
     </recent_temporary>
   </component>

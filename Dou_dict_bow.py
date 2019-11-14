@@ -3,6 +3,7 @@ import datetime
 import json
 from pathlib import *
 
+
 dict_dou = []
 spellcheck_words_dou = {}
 
@@ -23,7 +24,6 @@ def create_dict_dou(path_data):
             for publicacao in json_data:
                 i += 1
                 print(i)
-                # publicacao_text = publicacao_text_join(publicacao)
                 publicacao_tokens = publicacao_normalization(publicacao)
                 update_dict_dou(publicacao_tokens)
 
@@ -31,7 +31,6 @@ def create_dict_dou(path_data):
     dump_jsonfile('./spellcheck/spellcheck_dou', spellcheck_words_dou)
 
 
-## TODO: não preciso mais dessa função?
 def publicacao_text_join(publicacao):
     """
     Junta os campos de uma publicação.
@@ -62,9 +61,7 @@ def update_dict_dou(publicacao_tokens, dict_toupdate=None):
     :param dict_toupdate: caminho para atualizar um dicionário já existente caso a função seja utilizada depois que já
     existir um dicionário previamente criado
     """
-    # filtered_tokens = publicacao_normalization(publicacao)
     spell = Text_normalization.spell_check_define_dict('./pt_BR_out.txt')
-    # spellcheck_tokens, spellcheck_dict_publicacao = Text_normalization.spell_check(filtered_tokens, spell)
     spellcheck_tokens, spellcheck_dict_publicacao = Text_normalization.spell_check(publicacao_tokens, spell)
     new_words = [token for token in spellcheck_tokens if token not in dict_dou]
     dict_dou.extend(new_words)
@@ -112,6 +109,7 @@ def date_from_string(string):
     return date
 
 
+# print ("teste")
 path_d = Path('./data')
 create_dict_dou(path_d)
 # fil = publicacao_normalization({'tittle': 'qualquercoisa', 'body': 'qualquercoisa2'})

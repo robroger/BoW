@@ -1,0 +1,17 @@
+LISTA DE ALTERAÇÕES EM SIGLAS_ORGAOS_CLEAN:
+
+ITENS RETIRADOS:
+"sos": "save our souls salvem nossas almas expressao inglesa\n"
+"ccs": "cadastro dee clientes do sistema finnceiro nacional\n"
+"dec": "duracao equivalente de interrupcao (energia eletrica)\n"
+"inc": "computer sales international\n"
+"cia": "agencia central de inteligencia central intelligence agency (eua)\n"
+
+ALTERADOS:
+"siafi": "-sistema integrado de administracao financeira (governo federal)"
+"siafi": "sistema integrado de administracao financeira"
+"embratur": "instituto brasileiro de turismo (atual)"
+"embratur": "instituto brasileiro de turismo"
+
+ITENS EM DÚVIDA (PERGUNTAR PARA O MARCOS):
+"cic": "cartao de identificacao do contribuinte\n"
