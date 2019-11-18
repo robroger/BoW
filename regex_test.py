@@ -21,7 +21,7 @@ def create_dict_orgaos():
             dict_orgaos.update({tokens[0]: tokens[1]})
 
     print(dict_orgaos)
-    with open('siglas_orgaos.txt', 'w') as w_file:
+    with open('sigla_orgao.txt', 'w') as w_file:
         w_file.write(json.dumps(dict_orgaos))
 
 
@@ -100,7 +100,7 @@ def create_dict_orgaos_clean():
 
     dict_orgaos_clean = {}
     list_orgaos = []
-    with open('siglas_orgaos.txt', 'r') as r_sigla:
+    with open('sigla_orgao.txt', 'r') as r_sigla:
         siglas_orgaos = json.load(r_sigla)
         for orgao in siglas_orgaos:
             list_orgaos.append(orgao.lower())
@@ -113,29 +113,40 @@ def create_dict_orgaos_clean():
     with open('siglas_orgaos_clean.txt', 'w') as w_file:
         w_file.write(json.dumps(dict_orgaos_clean))
 
-# list_block = {'est': []}
-# txt = 'brasília-df acre'
-# if re.findall(estado_pattern, txt, re.IGNORECASE | re.M | re.S):
-#     estado = re.findall(estado_pattern, txt, re.IGNORECASE | re.M | re.S)
-#     list_block['est'].extend(estado)
-#     for est in estado:
-#         if estado_sigla_est.get(est) is not None:
-#             list_block['est'].append(estado_sigla_est.get(est))
-#         if estado_est_sigla.get(est) is not None:
-#             list_block['est'].append(estado_est_sigla.get(est))
 
-#     print(list_block)
-# else:
-#     print('no match')
+texto = 'isso e um texto com uma sigla de estado mt aldeias altas 07.825.451/0001-07 tuneiras do oeste minas gerais'
+public = {
+    'contratante': ['aldeias altas', 'tuneiras do oeste'],
+    'concedente': ['isso', 'e', 'um', 'texto', 'com', 'uma', 'sigla', 'de', 'estado'],
+    'estado': {'contratante': ['minas gerais', 'mg'], 'concedente': ['mt', 'mato grosso']},
+    'CNPJs': ['04.480.157/0001-12', '07.825.451/0001-07']}
+texto_slipt = texto.split()
 
-# from pymongo import MongoClient
-# import json
+check_estado = [texto for i in (public['estado']['concedente'] + public['estado']['contratante']) if(i in texto)]
+if all([i in texto for i in public['concedente']]) and all(
+                        [i in texto for i in public['contratante']]) and len(public['concedente']) + len(
+                    public['contratante']) > 0 and check_estado and len(public['estado']['contratante']) + len(public['estado']['concedente']) > 0:
+    if len(public['CNPJs']) > 0 and any([i in texto for i in public['CNPJs']]):
+        print('found')
 
-# json_file = './output/test.json'
-# Campos de cada publicação: _id, bow: {dict}, data, risco, texto_completo
-# bow: {dict} > dict: bow de cada publicação
+kws = []
+for i in ['contratante', 'concedente', 'CNPJs']:
+    kws.extend(public[i])
 
-# pub = '19980102.json'
+for i in (public['estado']['concedente'] + public['estado']['contratante']):
+    if i in texto:
+        kws.append(i)
+
+print(kws)
+if all([i in texto for i in public['contratante']]) and [texto for i in public['estado']['contratante'] if(i in texto)]:
+    print('found2')
+
+# if all([i in texto for i in public['concedente']]) and len(public['concedente']) > 0:
+    # if len(public['estado']) > 0:
+    #     for estado in public['estado']:
+    #         if estado in texto:
+
+public2 = {'contratante': ['aldeias altas', 'tuneiras do oeste parana']}
 
 
 # def post_publicacoes(json_file):

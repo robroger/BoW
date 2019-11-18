@@ -9,6 +9,7 @@ from spellchecker import SpellChecker
 
 # TODO: biblioteca UNIDECODE
 # TODO: arrumar os retornos
+# TODO: palavras com hífen deveriam ficar com hífen?
 
 
 def text_tokenize(text):

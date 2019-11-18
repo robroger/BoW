@@ -29,20 +29,20 @@ estado_pattern = (
     r'paulo|sergipe|tocantins)\b')
 
 sigla_estado = {'ac': 'acre', 'al': 'alagoas', 'ap': 'amapa', 'am': 'amazonas', 'ba': 'bahia', 'ce': 'ceara',
-                    'df': 'distrito federal', 'es': 'espirito santo', 'go': 'goias', 'ma': 'maranhao',
-                    'mt': 'mato grosso', 'ms': 'mato grosso do sul', 'mg': 'minas gerais', 'pa': 'para',
-                    'pb': 'paraiba', 'pr': 'parana', 'pe': 'pernambuco', 'pi': 'piaui', 'rj': 'rio de janeiro',
-                    'rn': 'rio grande do norte', 'rs': 'rio grande do sul', 'ro': 'rondonia', 'rr': 'roraima',
-                    'sc': 'santa catarina', 'sp': 'sao paulo', 'se': 'sergipe', 'to': 'tocantins'}
+                'df': 'distrito federal', 'es': 'espirito santo', 'go': 'goias', 'ma': 'maranhao',
+                'mt': 'mato grosso', 'ms': 'mato grosso do sul', 'mg': 'minas gerais', 'pa': 'para',
+                'pb': 'paraiba', 'pr': 'parana', 'pe': 'pernambuco', 'pi': 'piaui', 'rj': 'rio de janeiro',
+                'rn': 'rio grande do norte', 'rs': 'rio grande do sul', 'ro': 'rondonia', 'rr': 'roraima',
+                'sc': 'santa catarina', 'sp': 'sao paulo', 'se': 'sergipe', 'to': 'tocantins'}
 
 # estado_sigla = dict sigla_estado com as keys e valores invertidos, ex: 'amazonas':'am'
 estado_sigla = dict([(value, key) for key, value in sigla_estado.items()])
 
 with open('siglas_orgaos_clean.txt', 'r') as r_sigla:
-    siglas_orgaos = json.load(r_sigla)
+    sigla_orgao = json.load(r_sigla)
 
-# orgaos_siglas = dict orgaos_siglas com as keys e valores invertidos, ex: 'fundacao nacional do indio':'funai'
-orgaos_siglas = dict([(value, key) for key, value in siglas_orgaos.items()])
+# orgao_sigla = dict orgao_sigla com as keys e valores invertidos, ex: 'fundacao nacional do indio':'funai'
+orgao_sigla = dict([(value, key) for key, value in sigla_orgao.items()])
 
 sub_contr = '(prefeitura\s(d.\smunic.pio\sd..?\s|municipal\sd..?\s|d..?\s)?|munic.pio\sd..?\s|estado|governo(\sestadual|do\sestado)?\sd.\s|departamento|secretaria|divis.o|instituto)'
 
@@ -106,6 +106,10 @@ def checa_num(kw):
     return None
 
 
+def findWholeWord(w):
+    return re.compile(r'\b({0})\b'.format(w), flags=re.IGNORECASE).search
+
+
 def block_builder(kw_lst):
     """
     Faz a lista de conjunto de nomes a ser procurado em uma publicação
@@ -120,32 +124,16 @@ def block_builder(kw_lst):
         return None, None
 
     blocos = {'contratante': [], 'concedente': [], 'convenio': [], 'licitacao': [], 'contratado': [], 'contrato': [],
-              'estado': [], 'cnpj': []}
+              'estado': {}, 'orgao': {}, 'cnpj': []}
     blocos_num = {'convenio': [], 'licitacao': [], 'contrato': []}
 
     for kw in kw_lst:
         cat = kw_category(kw)
         kw = kw.lower()
 
-        tokens = kw_tokens(kw)
-        for token in tokens:
-            if token in siglas_orgaos:
-                blocos[cat].append(siglas_orgaos.get(token))
-            if token in sigla_estado:
-                blocos['estado'].append(token)
-                blocos['estado'].append(sigla_estado.get(token))
-
-        for key in orgaos_siglas:
-            if key in kw:
-                blocos[cat].append(orgaos_siglas.get(key))
-        for key in estado_sigla:
-            if key in kw.split():               # para o caso do 'para' sendo encontrado em 'parana'
-                blocos['estado'].append(key)
-                blocos['estado'].append(estado_sigla.get(key))
-
         # Encontra as referência de cnpj em todos os kw (independente se já fazem parte de uma categoria ou não)
-        cnpj = re.findall(cnpj_pattern, kw)
-        blocos['cnpj'].extend(cnpj)
+        # cnpj = re.findall(cnpj_pattern, kw)
+        # blocos['cnpj'].extend(cnpj)
 
         if cat == 'contratante':
             # informação mais importante
@@ -160,13 +148,40 @@ def block_builder(kw_lst):
                 except:
                     pass
 
+        list_check = {'sigla_estado': sigla_estado, 'estado_sigla': estado_sigla, 'sigla_orgao': sigla_orgao, 'orgao_sigla': orgao_sigla}
+
+        # Retira na análise de estados 'para's que não são precedidos de 'do', 'no', 'o', que não são o estado pará
+        if findWholeWord('para')(kw):
+            para_index = kw.split().index('para') - 1
+            if kw.split()[para_index] not in 'do no o'.split():
+                kw = re.sub('para', '', kw)
+                kw = re.sub(r'(\s$)|(\s{2,})', '', kw)
+
+        # Encontra as referências de estado e orgao, retira das suas cat originais e insere no campo correspondente de blocos
+        for key in list_check:
+            blocos_key = 'estado'
+            check = list_check.get(key)
+            if key is ('sigla_orgao' or 'orgao_sigla'):
+                blocos_key = 'orgao'
+            for i in check:
+                if findWholeWord(i)(kw):
+                    blocos[blocos_key].update({cat: [i, check.get(i)]})
+                    if cat is 'contratante':
+                        blocos[cat][-1] = re.sub(i, '', blocos[cat][-1])
+                        blocos[cat][-1] = re.sub(r'(\s$)|(\s{2,})', '', blocos[cat][-1])
+                    else:
+                        blocos[cat] = [word for word in blocos[cat] if word not in i]
+
     return blocos, blocos_num
 
 
 if __name__ == '__main__':
-    a = ['prefeitura municipal de aldeias altas/AA', 'município de Tuneiras do Oeste parana', 'CT 0237.101-27/2007',
+    a = ['prefeitura municipal de aldeias altas/AA', 'município de Tuneiras do Oeste', 'CT 0237.101-27/2007',
          'CT 0242.083-00/2007', \
-         'CT 0247.481-35/2007', 'CT 0247.415-25/2007', 'CONSTRUTORA GAV LTDA CAMPUS MORÃO CONSTRUÇÃO LTDA',
+         'CT 0247.481-35/2007', 'CT 0247.415-25/2007',
+         'CONSTRUTORA GAV LTDA CAMPUS MORÃO CONSTRUÇÃO LTDA',
          '04.480.157/0001-12 04.480.157/0001-13']
     b = ['município de Tuneiras do Oeste/PR']
+    c = [
+        'RESULTADO DE HABILITA\u00c7\u00c3O CONCORR\u00caNCIA N9 3/97 A Comiss\u00e3o Especial de Licita\u00e7\u00e3o designada para proceder a realiza\u00e7\u00e3o da Concorr\u00eancia referenciada, destinada \u00e0 contrata\u00e7\u00e3o de empresa especializada para prestar servi\u00e7os de manuten\u00e7\u00e3o preventiva, corretiva e opera\u00e7\u00e3o das instala\u00e7\u00f5es el\u00e9tricas, grupos moto-geradores, sistema no-break, redes estabilizadas e instala\u00e7\u00f5es el\u00e9tricas especiais, subesta\u00e7\u00f5es e recupera\u00e7\u00e3o de equipamentos, torna p\u00fablico que foram habilitadas no certame as firmas DELTA ENGENHARIA IND\u00daSTRIA E COMERCIO LTDA; NORMATEL - NORDESTE MATERIAIS LTDA e ARA\u00daJO ABREU ENGENHARIA S/A, sendo as demais consideradas inabilitadas, tudo conforme raz\u00f5es exaradas na Ata pertinente. Fica mareada para o dia 13/01/98 \u00e0s 15:00, na Sala de Reuni\u00e3o localizada no Anexo I, sala 152, a abertura dos envelopes contendo as propostas das firmas habilitadas, ocasi\u00e3o em que ser\u00e3o devolvidos, devidamente lacrados, os envelopes contendo as propostas das firmas inabilitadas. Bras\u00edlia-DF, 31 de dezembro de 1997.']
     print(block_builder(a))
