@@ -4,8 +4,7 @@ from unidecode import unidecode
 import json
 
 re_dict = {
-    # TODO: arrumar o contrato para sair inteiro
-    'contrato': '((?:CT\s\d{1,4})|contrat.{1,10}(.de.empreitada)?(administrativo)?(de.presta..o.de.servi.os)?\s?(n|N)?.{1,3}?(?:\d(?:\.|-)?){1,10}?(?:(\/|-)(?:\d{4}|\d{2}))?)',
+    'contrato': '(?:(?:CT)(?:\s)|(?:contrat(?:.{1,10})(?:.de.empreitada)?(.administrativo)?(.de.presta..o.de.servi.os)?\s?(?:n|N)?)).(?:\d{1,4})(?:(?:[.-]\d{1,3})?)(?:(?:[.-]\d{1,10})?)(?:(?:[./](?:\d{4}|\d{2}))?)',
     'convenio': '(contrato(s)?.de.repasse?|convênio)',
     'licitacao': '(processo.licitat.rio|concorrência(.pública)?(.internacional)?|licitação|TP-|Tomada\s+de\s+Preço(s)?|(Carta.)?Convite|C?onvite|edital|Dispensa|pregão(.presencial|.eletrônico)?)',
     'concedente': '(FUNAI|EMBRATUR|INCRA|FUNASA|FUNDEB|FNDE|DNOCS|Minist.rio\s(([A-Z]\S{1,15}|d.s?|,|e|–|em)\s?){1,15}|CODEVASF)',
@@ -105,8 +104,7 @@ def checa_num(kw):
         return kw_tokens(' '.join(num_lst))
     return None
 
-
-def findWholeWord(w):
+def findwholeword(w):
     return re.compile(r'\b({0})\b'.format(w), flags=re.IGNORECASE).search
 
 
@@ -124,7 +122,7 @@ def block_builder(kw_lst):
         return None, None
 
     blocos = {'contratante': [], 'concedente': [], 'convenio': [], 'licitacao': [], 'contratado': [], 'contrato': [],
-              'estado': {}, 'orgao': {}, 'CNPJs': []}
+              'estado': [], 'orgao': [], 'CNPJs': []}
     blocos_num = {'convenio': [], 'licitacao': [], 'contrato': []}
 
     for kw in kw_lst:
@@ -141,17 +139,24 @@ def block_builder(kw_lst):
             nome_contr = re.sub('(\/|-)\D\D', '', nome_contr)
             blocos[cat].extend([nome_contr])
         elif cat in blocos:
-            blocos[cat].extend(kw_tokens(kw))
-            if cat in blocos_num:
-                try:
-                    blocos_num[cat].extend(checa_num(kw))
-                except:
-                    pass
+            if cat == 'contrato':
+                num_contrato_pattern = re.search(
+                    r'((?:\d{1,4})[.-](?:\d{1,3})?(?:\d(?:[.-]))(?:\d{1,10})(?:[/-])(?:\d{4}|(\d{2}))|(?:\d{1,4})(?:[/-])(?:\d{4}|\d{2}))',
+                    kw).group(0)
+                blocos['contrato'].append(num_contrato_pattern)
+            else:
+                blocos[cat].extend(kw_tokens(kw))
+                if cat in blocos_num:
+                    try:
+                        blocos_num[cat].extend(checa_num(kw))
+                    except:
+                        pass
 
         list_check = {'sigla_estado': sigla_estado, 'estado_sigla': estado_sigla, 'sigla_orgao': sigla_orgao, 'orgao_sigla': orgao_sigla}
 
         # Retira na análise de estados 'para's que não são precedidos de 'do', 'no', 'o', que não são o estado pará
-        if findWholeWord('para')(kw):
+        if findwholeword('para')(kw):
+            # TODO: e se para for a primeira palavra?
             para_index = kw.split().index('para') - 1
             if kw.split()[para_index] not in 'do no o'.split():
                 kw = re.sub('para', '', kw)
@@ -162,10 +167,11 @@ def block_builder(kw_lst):
             blocos_key = 'estado'
             check = list_check.get(key)
             if key is ('sigla_orgao' or 'orgao_sigla'):
-                blocos_key = 'orgao'
+                 blocos_key = 'orgao'
             for i in check:
-                if findWholeWord(i)(kw):
-                    blocos[blocos_key].update({cat: [i, check.get(i)]})
+                if findwholeword(i)(kw):
+                    blocos[blocos_key].append(i)
+                    blocos[blocos_key].append(check.get(i))
                     if cat is 'contratante':
                         blocos[cat][-1] = re.sub(i, '', blocos[cat][-1])
                         blocos[cat][-1] = re.sub(r'(\s$)|(\s{2,})', '', blocos[cat][-1])
@@ -176,12 +182,10 @@ def block_builder(kw_lst):
 
 
 if __name__ == '__main__':
-    a = ['prefeitura municipal de aldeias altas/AA', 'município de Tuneiras do Oeste', 'CT 0237.101-27/2007',
+    a = ['prefeitura municipal de aldeias altas/AA', 'município de Tuneiras do Oeste df', 'CT 0237.101-27/2007',
          'CT 0242.083-00/2007', \
          'CT 0247.481-35/2007', 'CT 0247.415-25/2007',
          'CONSTRUTORA GAV LTDA CAMPUS MORÃO CONSTRUÇÃO LTDA',
          '04.480.157/0001-12 04.480.157/0001-13']
     b = ['município de Tuneiras do Oeste/PR']
-    c = [
-        'RESULTADO DE HABILITA\u00c7\u00c3O CONCORR\u00caNCIA N9 3/97 A Comiss\u00e3o Especial de Licita\u00e7\u00e3o designada para proceder a realiza\u00e7\u00e3o da Concorr\u00eancia referenciada, destinada \u00e0 contrata\u00e7\u00e3o de empresa especializada para prestar servi\u00e7os de manuten\u00e7\u00e3o preventiva, corretiva e opera\u00e7\u00e3o das instala\u00e7\u00f5es el\u00e9tricas, grupos moto-geradores, sistema no-break, redes estabilizadas e instala\u00e7\u00f5es el\u00e9tricas especiais, subesta\u00e7\u00f5es e recupera\u00e7\u00e3o de equipamentos, torna p\u00fablico que foram habilitadas no certame as firmas DELTA ENGENHARIA IND\u00daSTRIA E COMERCIO LTDA; NORMATEL - NORDESTE MATERIAIS LTDA e ARA\u00daJO ABREU ENGENHARIA S/A, sendo as demais consideradas inabilitadas, tudo conforme raz\u00f5es exaradas na Ata pertinente. Fica mareada para o dia 13/01/98 \u00e0s 15:00, na Sala de Reuni\u00e3o localizada no Anexo I, sala 152, a abertura dos envelopes contendo as propostas das firmas habilitadas, ocasi\u00e3o em que ser\u00e3o devolvidos, devidamente lacrados, os envelopes contendo as propostas das firmas inabilitadas. Bras\u00edlia-DF, 31 de dezembro de 1997.']
     print(block_builder(a))

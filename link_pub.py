@@ -109,46 +109,55 @@ def test_terms(cat_id_list, texto, risco1, data_pub):
             kw_tokens = item.get('kw_tokens', '')
             # Caso Convênio
             if cat_id[0] == 'convenio' and re.search('conv.nio', texto):
-                check_estado = [texto for i in (kw_tokens['estado']['concedente'] + kw_tokens['estado']['contratante']) if(i in texto)]
                 if all([i in texto for i in kw_tokens['concedente']]) and all(
                         [i in texto for i in kw_tokens['contratante']]) and len(kw_tokens['concedente']) + len(
-                    kw_tokens['contratante']) > 0 and check_estado and len(kw_tokens['estado']['contratante']) + len(kw_tokens['estado']['concedente']) > 0:
-                    if len(kw_tokens['CNPJs']) > 0 and any([i in texto for i in kw_tokens['CNPJs']]):
-                        kws = []
-                        for i in ['contratante', 'concedente', 'convenio', 'CNPJs']:
-                            kws.extend(kw_tokens[i])
+                    kw_tokens['contratante']) > 0:
+                    if any([i in texto for i in kw_tokens['estado']]) or len(kw_tokens['estado']) == 0:
+                        if any([i in texto for i in kw_tokens['orgao']]) or len(kw_tokens['orgao']) == 0:
+                            if any([i in texto for i in kw_tokens['CNPJs']]) or len(kw_tokens['CNPJs']) == 0:
+                                kws = []
+                                for i in ['contratante', 'concedente', 'convenio', 'CNPJs']:
+                                    kws.extend(kw_tokens[i])
 
-                        for i in (kw_tokens['estado']['concedente'] + kw_tokens['estado']['contratante']):
-                            if i in texto:
-                                kws.append(i)
-                        pts = compute_pts(texto, kws)
+                                    for i in [kw_tokens['estado'], kw_tokens['orgao'], kw_tokens['CNPJs']]:
+                                        for j in i:
+                                            if j in texto:
+                                                kws.append(j)
+
+                                pts = compute_pts(texto, kws)
             # Caso Licitação
             elif cat_id[0] == 'licitacao' and re.search('(licitacao|edital)', texto):
-                check_estado = [texto for i in kw_tokens['estado']['contratante'] if(i in texto)]
-                if all([i in texto for i in kw_tokens['contratante']]) and len(kw_tokens['contratante']) > 0 and check_estado and len(kw_tokens['estado']['contratante']) > 0:
-                    if len(kw_tokens['CNPJs']) > 0 and any([i in texto for i in kw_tokens['CNPJs']]):
-                        kws = []
-                        for i in ['contratante', 'licitacao', 'CNPJs']:
-                            kws.extend(kw_tokens[i])
+                if all([i in texto for i in kw_tokens['contratante']]) and len(kw_tokens['contratante']) > 0:
+                    if any([i in texto for i in kw_tokens['estado']]) or len(kw_tokens['estado']) == 0:
+                        if any([i in texto for i in kw_tokens['orgao']]) or len(kw_tokens['orgao']) == 0:
+                            if any([i in texto for i in kw_tokens['CNPJs']]) or len(kw_tokens['CNPJs']) == 0:
+                                kws = []
+                                for i in ['contratante', 'licitacao', 'CNPJs']:
+                                    kws.extend(kw_tokens[i])
 
-                        for i in kw_tokens['estado']['contratante']:
-                            if i in texto:
-                                kws.append(i)
-                        pts = compute_pts(texto, kws)
+                                for i in [kw_tokens['estado'], kw_tokens['orgao'], kw_tokens['CNPJs']]:
+                                    for j in i:
+                                        if j in texto:
+                                            kws.append(j)
+
+                                pts = compute_pts(texto, kws)
             # Caso Contrato
             elif cat_id[0] == 'contrato' and re.search('(contrato|aditivo|rescis.o)', texto):
                 # TODO: Colocar contratado?
-                check_estado = [texto for i in kw_tokens['estado']['contratante'] if(i in texto)]
-                if all([i in texto for i in kw_tokens['contratante']]) and len(kw_tokens['contratante']) > 0 and check_estado and len(kw_tokens['estado']['contratante']) > 0:
-                    if len(kw_tokens['CNPJs']) > 0 and any([i in texto for i in kw_tokens['CNPJs']]):
-                        kws = []
-                        for i in ['contratante', 'contratante', 'contrato', 'CNPJs']:
-                            kws.extend(kw_tokens[i])
+                if all([i in texto for i in kw_tokens['contratante']]) and len(kw_tokens['contratante']) > 0:
+                    if any([i in texto for i in kw_tokens['estado']]) or len(kw_tokens['estado']) == 0:
+                        if any([i in texto for i in kw_tokens['orgao']]) or len(kw_tokens['orgao']) == 0:
+                            if any([i in texto for i in kw_tokens['CNPJs']]) or len(kw_tokens['CNPJs']) == 0:
+                                kws = []
+                                for i in ['contratante', 'contratante', 'contrato', 'CNPJs']:
+                                    kws.extend(kw_tokens[i])
 
-                        for i in kw_tokens['estado']['contratante']:
-                            if i in texto:
-                                kws.append(i)
-                        pts = compute_pts(texto, kws)
+                                for i in [kw_tokens['estado'], kw_tokens['orgao'], kw_tokens['CNPJs']]:
+                                    for j in i:
+                                        if j in texto:
+                                            kws.append(j)
+
+                                pts = compute_pts(texto, kws)
             pts_list.append(pts)
     return pts_list
 
