@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d6583dbc-0734-4e81-88e8-b818862309e7" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Text_normalization.py" beforeDir="false" afterPath="$PROJECT_DIR$/Text_normalization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/link_pub.py" beforeDir="false" afterPath="$PROJECT_DIR$/link_pub.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/regex_bib.py" beforeDir="false" afterPath="$PROJECT_DIR$/regex_bib.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/regex_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/regex_test.py" afterDir="false" />
     </list>

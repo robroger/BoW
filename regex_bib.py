@@ -124,7 +124,7 @@ def block_builder(kw_lst):
         return None, None
 
     blocos = {'contratante': [], 'concedente': [], 'convenio': [], 'licitacao': [], 'contratado': [], 'contrato': [],
-              'estado': {}, 'orgao': {}, 'cnpj': []}
+              'estado': {}, 'orgao': {}, 'CNPJs': []}
     blocos_num = {'convenio': [], 'licitacao': [], 'contrato': []}
 
     for kw in kw_lst:
@@ -132,8 +132,8 @@ def block_builder(kw_lst):
         kw = kw.lower()
 
         # Encontra as referência de cnpj em todos os kw (independente se já fazem parte de uma categoria ou não)
-        # cnpj = re.findall(cnpj_pattern, kw)
-        # blocos['cnpj'].extend(cnpj)
+        cnpj = re.findall(cnpj_pattern, kw)
+        blocos['CNPJs'].extend(cnpj)
 
         if cat == 'contratante':
             # informação mais importante

@@ -119,15 +119,20 @@ public = {
     'contratante': ['aldeias altas', 'tuneiras do oeste'],
     'concedente': ['isso', 'e', 'um', 'texto', 'com', 'uma', 'sigla', 'de', 'estado'],
     'estado': {'contratante': ['minas gerais', 'mg'], 'concedente': ['mt', 'mato grosso']},
+    'orgao': {'contratante': ['funai', 'fundacao nacional do indio']},
     'CNPJs': ['04.480.157/0001-12', '07.825.451/0001-07']}
 texto_slipt = texto.split()
 
+# TODO: E SE CONCEDENTE NÃO EXISTIR
 check_estado = [texto for i in (public['estado']['concedente'] + public['estado']['contratante']) if(i in texto)]
+check_orgao = [texto for i in (public['orgao']['concedente'] + public['orgao']['contratante']) if(i in texto)]
 if all([i in texto for i in public['concedente']]) and all(
                         [i in texto for i in public['contratante']]) and len(public['concedente']) + len(
-                    public['contratante']) > 0 and check_estado and len(public['estado']['contratante']) + len(public['estado']['concedente']) > 0:
-    if len(public['CNPJs']) > 0 and any([i in texto for i in public['CNPJs']]):
-        print('found')
+                    public['contratante']) > 0:
+    if check_estado and len(public['estado']['contratante']) + len(public['estado']['concedente']) > 0:
+        if len(public['orgao']['contratante']) + len(public['estado']['concedente']) > 0 and [texto for i in (public['orgao']['concedente'] + public['orgao']['contratante']) if(i in texto)]:
+            if any([i in texto for i in public['CNPJs']]) and len(public['CNPJs']) > 0:
+                print('found')
 
 kws = []
 for i in ['contratante', 'concedente', 'CNPJs']:
