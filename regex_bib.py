@@ -122,13 +122,13 @@ def block_builder(kw_lst):
         return None, None
 
     blocos = {'contratante': [], 'concedente': [], 'convenio': [], 'licitacao': [], 'contratado': [], 'contrato': [],
-              'estado': [], 'orgao': [], 'CNPJs': []}
+              'estado': {}, 'orgao': {}, 'CNPJs': []}
     blocos_num = {'convenio': [], 'licitacao': [], 'contrato': []}
 
     for kw in kw_lst:
         cat = kw_category(kw)
         kw = kw.lower()
-
+        kw = unidecode(kw)
         # Encontra as referência de cnpj em todos os kw (independente se já fazem parte de uma categoria ou não)
         cnpj = re.findall(cnpj_pattern, kw)
         blocos['CNPJs'].extend(cnpj)
@@ -140,10 +140,12 @@ def block_builder(kw_lst):
             blocos[cat].extend([nome_contr])
         elif cat in blocos:
             if cat == 'contrato':
-                num_contrato_pattern = re.search(
-                    r'((?:\d{1,4})[.-](?:\d{1,3})?(?:\d(?:[.-]))(?:\d{1,10})(?:[/-])(?:\d{4}|(\d{2}))|(?:\d{1,4})(?:[/-])(?:\d{4}|\d{2}))',
-                    kw).group(0)
-                blocos['contrato'].append(num_contrato_pattern)
+                num_contrato = [token for token in kw.split() if any(map(str.isdigit, token))]
+                blocos['contrato'].extend(num_contrato)
+                # num_contrato_pattern = re.search(
+                #     r'((?:\d{1,4})[.-](?:\d{1,3})?(?:\d(?:[.-]))(?:\d{1,10})(?:[/-])(?:\d{4}|(\d{2}))|(?:\d{1,4})(?:[/-])(?:\d{4}|\d{2}))',
+                #     kw).group(0)
+
             else:
                 blocos[cat].extend(kw_tokens(kw))
                 if cat in blocos_num:
@@ -163,29 +165,33 @@ def block_builder(kw_lst):
                 kw = re.sub(r'(\s$)|(\s{2,})', '', kw)
 
         # Encontra as referências de estado e orgao, retira das suas cat originais e insere no campo correspondente de blocos
-        for key in list_check:
-            blocos_key = 'estado'
-            check = list_check.get(key)
-            if key is ('sigla_orgao' or 'orgao_sigla'):
-                 blocos_key = 'orgao'
-            for i in check:
-                if findwholeword(i)(kw):
-                    blocos[blocos_key].append(i)
-                    blocos[blocos_key].append(check.get(i))
-                    if cat is 'contratante':
-                        blocos[cat][-1] = re.sub(i, '', blocos[cat][-1])
-                        blocos[cat][-1] = re.sub(r'(\s$)|(\s{2,})', '', blocos[cat][-1])
-                    else:
-                        blocos[cat] = [word for word in blocos[cat] if word not in i]
+        if cat is not 'outros':
+            for key in list_check:
+                blocos_key = 'estado'
+                check = list_check.get(key)
+                if key is ('sigla_orgao' or 'orgao_sigla'):
+                     blocos_key = 'orgao'
+                for i in check:
+                    if findwholeword(i)(kw):
+                        if cat not in blocos[blocos_key]:
+                            blocos[blocos_key].update({cat: []})
+                        blocos[blocos_key][cat].append(i)
+                        blocos[blocos_key][cat].append(check.get(i))
+                        if cat is 'contratante':
+                            blocos[cat][-1] = re.sub(i, '', blocos[cat][-1])
+                            blocos[cat][-1] = re.sub(r'(^\s)|(\s$)|(\s{2,})', '', blocos[cat][-1])
+                        else:
+                            blocos[cat] = [word for word in blocos[cat] if word not in i]
 
     return blocos, blocos_num
 
 
 if __name__ == '__main__':
-    a = ['prefeitura municipal de aldeias altas/AA', 'município de Tuneiras do Oeste df', 'CT 0237.101-27/2007',
+    a = ['prefeitura municipal de goiás aldeias altas/AA', 'CT 0237.101-27/2007', 'Contrato no 4.08.030a mg',
          'CT 0242.083-00/2007', \
-         'CT 0247.481-35/2007', 'CT 0247.415-25/2007',
+         'CT 0247.481-35/2007', 'CT 0247.415-25/2007', '4.08.030a',
          'CONSTRUTORA GAV LTDA CAMPUS MORÃO CONSTRUÇÃO LTDA',
          '04.480.157/0001-12 04.480.157/0001-13']
     b = ['município de Tuneiras do Oeste/PR']
+    c = ['Governo Estadual do Goiás']
     print(block_builder(a))

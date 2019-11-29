@@ -114,45 +114,69 @@ def create_dict_orgaos_clean():
         w_file.write(json.dumps(dict_orgaos_clean))
 
 
-texto = 'isso e um texto com uma funai sigla fundacao nacional do indio de estado aldeias altas 07.825.451/0001-07  mt tuneiras do oeste'
+texto = 'isso e um texto com uma sigla de estado tuneiras do oeste'
 public = {
-    'contratante': ['aldeias altas', 'tuneiras do oeste'],
+    'contratante': ['tuneiras do oeste'],
     'concedente': ['isso', 'e', 'um', 'texto', 'com', 'uma', 'sigla', 'de', 'estado'],
-    'estado': ['minas gerais', 'mg', 'mt', 'mato grosso'],
-    'orgao': [],
-    'CNPJs': ['04.480.157/0001-12', '07.825.451/0001-07']}
-texto_slipt = texto.split()
+    'estado': {'contratante': ['mg', 'minas gerais']},
+    'orgao': {},
+    'CNPJs': []}
+
 
 # TODO: E SE CONCEDENTE NÃO EXISTIR
-# check_estado = [texto for i in (public['estado']['concedente'] + public['estado']['contratante']) if(i in texto)]
+# check_estado = [texto for i in (public['estado']['concedente']) if(i in texto)]
 # check_orgao = [texto for i in (public['orgao']['concedente'] + public['orgao']['contratante']) if(i in texto)]
 
+# if ('contratante' not in public['estado']) or any([i in texto for i in public['estado']['contratante']]):
+# if ('concedente' not in public['estado']) or any([i in texto for i in public['estado']['concedente']]):
+# if ('contratante' not in public['orgao']) or any([i in texto for i in public['orgao']['contratante']]):
+# if ('concedente' not in public['orgao']) or any([i in texto for i in public['orgao']['concedente']]):
+
+
+def findwholeword(w):
+    return re.compile(r'\b({0})\b'.format(w), flags=re.IGNORECASE).search
 
 if all([i in texto for i in public['concedente']]) and all(
-                        [i in texto for i in public['contratante']]) and len(public['concedente']) + len(
-                    public['contratante']) > 0:
-    if any([i in texto for i in public['estado']]) and len(public['estado']) > 0:
-        if any([i in texto for i in public['orgao']]) or len(public['orgao']) == 0:
-            if any([i in texto for i in public['CNPJs']]) and len(public['CNPJs']) > 0:
-                print('found')
+        [i in texto for i in public['contratante']]) and len(public['concedente']) > 0:
+    if ('contratante' not in public['estado']) or any([findwholeword(i)(texto) for i in public['estado']['contratante']]):
+        if ('concedente' not in public['estado']) or any([findwholeword(i)(texto) for i in public['estado']['concendente']]):
+            if ('contratante' not in public['orgao']) or any([findwholeword(i)(texto) for i in
+                                                          public['orgao']['contratante']]):
+                if ('concedente' not in public['orgao']) or any([findwholeword(i)(texto) for i in
+                                                             public['estado']['orgao']]):
+                    print('found')
+
+    # if all([i in texto for i in public['concedente']]) and all(
+#                        [i in texto for i in public['contratante']]) and len(public['concedente']) > 0:
+#    if ('contratante' not in public['estado']) or [texto for i in (public['estado']['contratante']) if(i in texto)]:
+# if ('concedente' not in public['estado']) or [texto for i in (public['estado']['concedente']) if(i in texto)]:
+#            if ('contratante' not in public['orgao']) or [texto for i in (public['orgao']['contratante']) if (i in texto)]:
+#                if ('concedente' not in public['orgao']) or [texto for i in (public['orgao']['concedente']) if (i in texto)]:
+#                    print('found')
 
 kws = []
-for i in [public['estado'], public['orgao'], public['CNPJs']]:
-    for j in i:
-        if j in texto:
-            kws.append(j)
+
+for estado_or_orgao in ['estado', 'orgao']:
+    for k in public[estado_or_orgao]:
+        for word in public[estado_or_orgao][k]:
+            if findwholeword(word)(texto):
+                kws.append(word)
+# for i in [public['estado'], public['orgao'], public['CNPJs']]:
+#    for j in i:
+#        if j in texto:
+#            kws.append(j)
 
 print(kws)
+
 # if all([i in texto for i in public['contratante']]) and [texto for i in public['estado']['contratante'] if(i in texto)]:
 #    print('found2')
 
 # if all([i in texto for i in public['concedente']]) and len(public['concedente']) > 0:
-    # if len(public['estado']) > 0:
-    #     for estado in public['estado']:
-    #         if estado in texto:
+# if len(public['estado']) > 0:
+#     for estado in public['estado']:
+#         if estado in texto:
 
 public2 = {'contratante': ['aldeias altas', 'tuneiras do oeste parana']}
-
 
 # def post_publicacoes(json_file):
 #     client = MongoClient('localhost', 27017)

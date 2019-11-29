@@ -1,8 +1,10 @@
 from pymongo import MongoClient
 from regex_bib import extrai_num
+from regex_bib import findwholeword
 import re
 import time
 from fuzzywuzzy import fuzz
+from unidecode import unidecode
 
 numbers = r'(\S+)?\d\d\d+(\S+)?'
 
@@ -107,55 +109,62 @@ def test_terms(cat_id_list, texto, risco1, data_pub):
             item = risco1.find_one({'_id': cat_id[1]})
             pts = 0
             kw_tokens = item.get('kw_tokens', '')
+            texto = unidecode(texto)
             # Caso Convênio
             if cat_id[0] == 'convenio' and re.search('conv.nio', texto):
                 if all([i in texto for i in kw_tokens['concedente']]) and all(
                         [i in texto for i in kw_tokens['contratante']]) and len(kw_tokens['concedente']) + len(
                     kw_tokens['contratante']) > 0:
-                    if any([i in texto for i in kw_tokens['estado']]) or len(kw_tokens['estado']) == 0:
-                        if any([i in texto for i in kw_tokens['orgao']]) or len(kw_tokens['orgao']) == 0:
-                            if any([i in texto for i in kw_tokens['CNPJs']]) or len(kw_tokens['CNPJs']) == 0:
-                                kws = []
-                                for i in ['contratante', 'concedente', 'convenio', 'CNPJs']:
-                                    kws.extend(kw_tokens[i])
+                    if ('contratante' not in kw_tokens['estado']) or any([findwholeword(i)(texto) for i in kw_tokens['estado']['contratante']]):
+                        if ('concedente' not in kw_tokens['estado']) or any([findwholeword(i)(texto) for i in kw_tokens['estado']['concendente']]):
+                            if ('contratante' not in kw_tokens['orgao']) or any([findwholeword(i)(texto) for i in kw_tokens['orgao']['contratante']]):
+                                if ('concedente' not in kw_tokens['orgao']) or any([findwholeword(i)(texto) for i in kw_tokens['estado']['orgao']]):
+                                    if any([i in texto for i in kw_tokens['CNPJs']]) or len(kw_tokens['CNPJs']) == 0:
 
-                                    for i in [kw_tokens['estado'], kw_tokens['orgao'], kw_tokens['CNPJs']]:
-                                        for j in i:
-                                            if j in texto:
-                                                kws.append(j)
+                                        kws = []
+                                        for i in ['contratante', 'concedente', 'convenio', 'CNPJs']:
+                                            kws.extend(kw_tokens[i])
 
-                                pts = compute_pts(texto, kws)
+                                        for estado_or_orgao in ['estado', 'orgao']:
+                                            for k in kw_tokens[estado_or_orgao]:
+                                                for word in kw_tokens[estado_or_orgao][k]:
+                                                    if findwholeword(word)(texto):
+                                                        kws.append(word)
+
+                                        pts = compute_pts(texto, kws)
             # Caso Licitação
             elif cat_id[0] == 'licitacao' and re.search('(licitacao|edital)', texto):
                 if all([i in texto for i in kw_tokens['contratante']]) and len(kw_tokens['contratante']) > 0:
-                    if any([i in texto for i in kw_tokens['estado']]) or len(kw_tokens['estado']) == 0:
-                        if any([i in texto for i in kw_tokens['orgao']]) or len(kw_tokens['orgao']) == 0:
+                    if ('contratante' not in kw_tokens['estado']) or any([findwholeword(i)(texto) for i in kw_tokens['estado']['contratante']]):
+                        if ('contratante' not in kw_tokens['orgao']) or any([findwholeword(i)(texto) for i in kw_tokens['orgao']['contratante']]):
                             if any([i in texto for i in kw_tokens['CNPJs']]) or len(kw_tokens['CNPJs']) == 0:
                                 kws = []
                                 for i in ['contratante', 'licitacao', 'CNPJs']:
                                     kws.extend(kw_tokens[i])
 
-                                for i in [kw_tokens['estado'], kw_tokens['orgao'], kw_tokens['CNPJs']]:
-                                    for j in i:
-                                        if j in texto:
-                                            kws.append(j)
+                                for estado_or_orgao in ['estado', 'orgao']:
+                                    for k in kw_tokens[estado_or_orgao]:
+                                        for word in kw_tokens[estado_or_orgao][k]:
+                                            if findwholeword(word)(texto):
+                                                kws.append(word)
 
                                 pts = compute_pts(texto, kws)
             # Caso Contrato
             elif cat_id[0] == 'contrato' and re.search('(contrato|aditivo|rescis.o)', texto):
                 # TODO: Colocar contratado?
                 if all([i in texto for i in kw_tokens['contratante']]) and len(kw_tokens['contratante']) > 0:
-                    if any([i in texto for i in kw_tokens['estado']]) or len(kw_tokens['estado']) == 0:
-                        if any([i in texto for i in kw_tokens['orgao']]) or len(kw_tokens['orgao']) == 0:
+                    if ('contratante' not in kw_tokens['estado']) or any([findwholeword(i)(texto) for i in kw_tokens['estado']['contratante']]):
+                        if ('contratante' not in kw_tokens['orgao']) or any([findwholeword(i)(texto) for i in kw_tokens['orgao']['contratante']]):
                             if any([i in texto for i in kw_tokens['CNPJs']]) or len(kw_tokens['CNPJs']) == 0:
                                 kws = []
                                 for i in ['contratante', 'contratante', 'contrato', 'CNPJs']:
                                     kws.extend(kw_tokens[i])
 
-                                for i in [kw_tokens['estado'], kw_tokens['orgao'], kw_tokens['CNPJs']]:
-                                    for j in i:
-                                        if j in texto:
-                                            kws.append(j)
+                                for estado_or_orgao in ['estado', 'orgao']:
+                                    for k in kw_tokens[estado_or_orgao]:
+                                        for word in kw_tokens[estado_or_orgao][k]:
+                                            if findwholeword(word)(texto):
+                                                kws.append(word)
 
                                 pts = compute_pts(texto, kws)
             pts_list.append(pts)

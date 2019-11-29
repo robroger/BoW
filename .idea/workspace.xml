@@ -46,7 +46,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.regex_bib">
+  <component name="RunManager" selected="Python.link_pub">
     <configuration name="Text_normalization" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="BagOfWords" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -161,9 +161,9 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.regex_bib" />
         <item itemvalue="Python.link_pub" />
         <item itemvalue="Python.regex_test" />
+        <item itemvalue="Python.regex_bib" />
         <item itemvalue="Python.regex_bib_marcos" />
         <item itemvalue="Python.Text_normalization" />
       </list>
